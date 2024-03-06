@@ -1,75 +1,99 @@
 <template>
-  <v-container class="fill-height">
-    <v-responsive class="align-center text-center fill-height">
-      <v-img height="300" src="@/assets/logo.svg" />
+  <v-card>
+    <v-toolbar
+      color="primary"
+    >
+      <v-toolbar-title>User Profile</v-toolbar-title>
+    </v-toolbar>
+    <div class="d-flex flex-row">
+      <v-tabs
+        v-model="tab"
+        color="primary"
+        direction="vertical"
+      >
+        <v-tab value="option-1">
+          <v-icon start>
+            mdi-account
+          </v-icon>
+          Option 1
+        </v-tab>
+        <v-tab value="option-2">
+          <v-icon start>
+            mdi-lock
+          </v-icon>
+          Option 2
+        </v-tab>
+        <v-tab value="option-3">
+          <v-icon start>
+            mdi-access-point
+          </v-icon>
+          Option 3
+        </v-tab>
+      </v-tabs>
+      <v-window v-model="tab">
+        <v-window-item value="option-1">
+          <v-card flat>
+            <v-card-text>
+              <p>
+                Sed aliquam ultrices mauris. Donec posuere vulputate arcu. Morbi ac felis. Etiam feugiat lorem non metus. Sed a libero.
+              </p>
 
-      <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
+              <p>
+                Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc. Aliquam lobortis. Aliquam lobortis. Suspendisse non nisl sit amet velit hendrerit rutrum.
+              </p>
 
-      <h1 class="text-h2 font-weight-bold">Vuetify</h1>
+              <p class="mb-0">
+                Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Phasellus blandit leo ut odio.
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+        <v-window-item value="option-2">
+          <v-card flat>
+            <v-card-text>
+              <p>
+                Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Nunc sed turpis.
+              </p>
 
-      <div class="py-14" />
+              <p>
+                Suspendisse feugiat. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In hac habitasse platea dictumst. Fusce ac felis sit amet ligula pharetra condimentum.
+              </p>
 
-      <v-row class="d-flex align-center justify-center">
-        <v-col cols="auto">
-          <v-btn
-            href="https://vuetifyjs.com/components/all/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon
-              icon="mdi-view-dashboard"
-              size="large"
-              start
-            />
+              <p>
+                Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Nam commodo suscipit quam. In consectetuer turpis ut velit. Sed cursus turpis vitae tortor. Aliquam eu nunc.
+              </p>
 
-            Components
-          </v-btn>
-        </v-col>
+              <p>
+                Etiam ut purus mattis mauris sodales aliquam. Ut varius tincidunt libero. Aenean viverra rhoncus pede. Duis leo. Fusce fermentum odio nec arcu.
+              </p>
 
-        <v-col cols="auto">
-          <v-btn
-            color="primary"
-            href="https://vuetifyjs.com/introduction/why-vuetify/#feature-guides"
-            min-width="228"
-            rel="noopener noreferrer"
-            size="x-large"
-            target="_blank"
-            variant="flat"
-          >
-            <v-icon
-              icon="mdi-speedometer"
-              size="large"
-              start
-            />
+              <p class="mb-0">
+                Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. Fusce commodo aliquam arcu. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi.
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+        <v-window-item value="option-3">
+          <v-card flat>
+            <v-card-text>
+              <p>
+                Fusce a quam. Phasellus nec sem in justo pellentesque facilisis. Nam eget dui. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In dui magna, posuere eget, vestibulum et, tempor auctor, justo.
+              </p>
 
-            Get Started
-          </v-btn>
-        </v-col>
-
-        <v-col cols="auto">
-          <v-btn
-            href="https://community.vuetifyjs.com/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon
-              icon="mdi-account-group"
-              size="large"
-              start
-            />
-
-            Community
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-responsive>
-  </v-container>
+              <p class="mb-0">
+                Cras sagittis. Phasellus nec sem in justo pellentesque facilisis. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nam at tortor in tellus interdum sagittis.
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+      </v-window>
+    </div>
+  </v-card>
 </template>
-
-<script setup>
-  //
+<script>
+  export default {
+    data: () => ({
+      tab: 'option-1',
+    }),
+  }
 </script>
