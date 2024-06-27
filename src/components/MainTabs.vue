@@ -1,64 +1,42 @@
 <template>
   <v-card>
-    <v-toolbar color="primary">
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Tablero principal</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
-
-      <template v-slot:extension>
-        <v-tabs
-          v-model="tab"
-          align-tabs="title"
-        >
-          <v-tab
-            v-for="item in itemsTab"
-            :key="item"
-            :value="item"
-          >
-            {{ item }}
-          </v-tab>
-        </v-tabs>
-      </template>
-    </v-toolbar>
-
+    <TestHeader
+      :color="'primary'"
+      :title="'Tablero principal'"
+      :buttons="buttons"
+      :itemsTab="itemsTab"
+      v-model:tab="tab"
+    />
     <v-window v-model="tab">
-      <v-window-item
-        v-for="item in itemsTab"
-        :key="item"
-        :value="item"
-      >
+      <v-window-item v-for="item in itemsTab" :key="item" :value="item">
         <v-card flat>
-
-          <v-data-table
-            :headers="headers"
-            :items="items"
-            :search="search"
-            item-value="name"
-          >
+          <v-table>
             <template v-slot:top>
-              <v-text-field
-                v-model="search"
-                class="pa-2"
-                label="Search"
-              ></v-text-field>
+              <v-text-field v-model="search" class="pa-2" label="Search"></v-text-field>
             </template>
-
-            <template v-slot:item.actions="{ item }">
-              <v-btn @click="showInformation(item)">Ver Detalles</v-btn>
-            </template>
-
-          </v-data-table>
-
+            <thead>
+              <tr>
+                <th v-for="header in headers" :key="header.value">{{ header.text }}</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in filteredItems" :key="item.name">
+                <td>{{ item.name }}</td>
+                <td>{{ item.cores }}</td>
+                <td>{{ item.threads }}</td>
+                <td>{{ item.baseClock }}</td>
+                <td>{{ item.boostClock }}</td>
+                <td>{{ item.tdp }}</td>
+                <td>
+                  <TestButton
+                    text="Ver Detalles"
+                    @click="showInformation(item)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
         </v-card>
       </v-window-item>
     </v-window>
@@ -66,11 +44,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import TestHeader from './organisms/TestHeader.vue';
+import TestButton from './atoms/TestButton.vue';
 
 const tab = ref(null);
 const itemsTab = ref(['Consulta', 'Edición', 'Agregar registro']);
 const search = ref('');
+
+const buttons = [
+  { icon: 'mdi-magnify' },
+  { icon: 'mdi-dots-vertical' },
+];
 
 const headers = [
   { text: 'CPU Model', align: 'start', value: 'name' },
@@ -79,7 +64,6 @@ const headers = [
   { text: 'Base Clock', align: 'end', value: 'baseClock' },
   { text: 'Boost Clock', align: 'end', value: 'boostClock' },
   { text: 'TDP (W)', align: 'end', value: 'tdp' },
-  { text: 'Actions', align: 'end', value: 'actions' },
 ];
 
 const items = [
@@ -95,6 +79,12 @@ const items = [
   { name: 'AMD Athlon 3000G', cores: 2, threads: 4, baseClock: '3.5 GHz', tdp: '35W' },
 ];
 
+const filteredItems = computed(() => {
+  return items.filter(item =>
+    item.name.toLowerCase().includes(search.value.toLowerCase())
+  );
+});
+
 function showInformation(item) {
   alert(`Detalles de ${item.name}: \n
          Cores: ${item.cores}\n
@@ -104,3 +94,5 @@ function showInformation(item) {
          TDP: ${item.tdp}`);
 }
 </script>
+
+
