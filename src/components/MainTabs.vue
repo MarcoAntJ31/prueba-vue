@@ -2,15 +2,10 @@
   <v-card>
     <TestHeader :color="'primary'" :title="'Tablero principal'" :buttons="buttons" :itemsTab="itemsTab"
       v-model:tab="tab" />
-    <v-tabs v-model="tab" align-tabs="center" color="deep-purple-accent-4">
-      <v-tab v-for="(item, index) in itemsTab" :key="index" :value="item">
-        {{ item }}
-      </v-tab>
-    </v-tabs>
+      <TestTabs :items="itemsTab">
 
-    <v-window v-model="tab">
-      <v-window-item v-for="(item, index) in itemsTab" :key="index" :value="item">
-        <v-card flat v-if="item === 'Consulta'">
+      <template #Consulta>
+        <v-card flat>
           <v-table hover>
             <template v-slot:top>
               <v-text-field v-model="search" class="pa-2" label="Search"></v-text-field>
@@ -35,8 +30,10 @@
             </tbody>
           </v-table>
         </v-card>
+      </template>
 
-        <v-card flat v-else-if="item === 'Edición'">
+      <template #Edición>
+        <v-card flat>
           <v-table hover>
             <template v-slot:top>
               <v-text-field v-model="search" class="pa-2" label="Search"></v-text-field>
@@ -55,25 +52,20 @@
                 <td>{{ item.boostClock }}</td>
                 <td>{{ item.tdp }}</td>
                 <td>
-                  <TestButton text="Editar datos" @click="editItem(item)" />
+                  <TestButton text="Editar datos" />
                 </td>
               </tr>
             </tbody>
           </v-table>
         </v-card>
+      </template>
 
-        <v-card flat v-else>
-          <TestModal :fields="[
-            { label: 'CPU Model', model: 'name', type: 'text', required: true, size: 'full' },
-            { label: 'Cores', model: 'cores', type: 'number', required: true, size: 'half' },
-            { label: 'Threads', model: 'threads', type: 'number', required: true, size: 'half' },
-            { label: 'Base Clock', model: 'baseClock', type: 'text', required: true, size: 'half' },
-            { label: 'Boost Clock', model: 'boostClock', type: 'text', required: true, size: 'half' },
-            { label: 'TDP (W)', model: 'tdp', type: 'text', required: true, size: 'half' },
-          ]" buttonText="Agregar registro" @form-submit="addNewRecord" />
+      <template #Agregar>
+        <v-card flat>
+          <TestModal :fields="fields" buttonText="Guardar cambios" @form-submit="addNewRecord" />
         </v-card>
-      </v-window-item>
-    </v-window>
+      </template>
+    </TestTabs>
   </v-card>
 </template>
 
@@ -82,15 +74,25 @@ import { ref, computed } from 'vue';
 import TestHeader from './organisms/TestHeader.vue';
 import TestButton from './atoms/TestButton.vue';
 import TestModal from './organisms/TestModal.vue';
+import TestTabs from './organisms/TestTabs.vue';
 
 const tab = ref('Consulta');
-const itemsTab = ref(['Consulta', 'Edición', 'Agregar registro']);
+const itemsTab = ref(['Consulta', 'Edición', 'Agregar']);
 const search = ref('');
 
 const buttons = [
   { icon: 'mdi-magnify' },
   { icon: 'mdi-dots-vertical' },
 ];
+
+const fields = ref([
+  { label: 'CPU Model', model: 'name', type: 'text', required: true, size: 'full' },
+  { label: 'Cores', model: 'cores', type: 'number', required: true, size: 'half' },
+  { label: 'Threads', model: 'threads', type: 'number', required: true, size: 'half' },
+  { label: 'Base Clock', model: 'baseClock', type: 'text', required: true, size: 'half' },
+  { label: 'Boost Clock', model: 'boostClock', type: 'text', required: true, size: 'half' },
+  { label: 'TDP (W)', model: 'tdp', type: 'text', required: true, size: 'half' },
+]);
 
 const headers = [
   { text: 'CPU Model', align: 'start', value: 'name' },
@@ -139,18 +141,6 @@ function showInformation(item) {
          Base Clock: ${item.baseClock}\n
          Boost Clock: ${item.boostClock}\n
          TDP: ${item.tdp}`);
-}
-
-function editItem(item) {
-  showModalEdit(item);
-}
-
-function saveItemChanges(item) {
-  alert(`Guardando cambios para ${item.name}`);
-}
-
-function showModalEdit(item) {
-  alert(`Abriendo modal de edición para ${item.name}`);
 }
 
 const newItem = ref({
