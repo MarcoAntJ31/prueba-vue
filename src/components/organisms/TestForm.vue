@@ -11,7 +11,6 @@
               <v-text-field v-model="formData[field.model]" :label="field.label" :type="field.type" :required="field.required"></v-text-field>
             </v-col>
           </v-row>
-
           <v-btn type="submit" color="primary" class="submit-button">{{ buttonText }}</v-btn>
         </v-container>
       </v-form>
@@ -20,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   fields: {
@@ -35,14 +34,28 @@ const props = defineProps({
   title: {
     type: String,
     default: 'Add Item'
+  },
+  item: {
+    type: Object,
+    default: null
   }
 });
 
 const formData = ref({});
-const emit = defineEmits(['form-submit']);
+
+
+if (props.item) {
+  formData.value = { ...props.item };
+}
+
+const emit = defineEmits(['form-submit', 'form-edit']);
 
 function handleSubmit() {
-  emit('form-submit', formData.value);
+  if (props.item) {
+    emit('form-edit', formData.value);
+  } else {
+    emit('form-submit', formData.value);
+  }
   formData.value = {};
 };
 
@@ -55,10 +68,14 @@ function getColumnSize(size) {
     return 12;
   }
 };
+
+
+watch(() => props.item, (newItem) => {
+  formData.value = { ...newItem };
+});
 </script>
 
 <style scoped>
-
 .form-field {
   margin-bottom: 15px;
 }

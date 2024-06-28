@@ -1,72 +1,46 @@
 <template>
-    <TestHeader
-      :color="'secondary'"
-      :title="'Tablero principal'"
-      :buttons="buttons"
-      :itemsTab="itemsTab"
-      v-model:tab="tab"
-    />
-    <TestTabs :items="itemsTab">
-      <template #Consulta>
-        <v-card>
-          <v-card-text>
-            <div class="table-container">
-              <TestTable
-                :headers="headers"
-                :rows="items"
-                :showSearch="true"
-                :showActions="true"
-                actionName="View Details"
-                actionButtonName="Details"
-                @action="showInformation"
-              >
-                <template #body="{ rows }">
-                  <ItemRows
-                    v-for="item in rows"
-                    :key="item.name"
-                    :item="item"
-                  />
-                </template>
-              </TestTable>
-            </div>
-            <v-pagination :length="4"></v-pagination>
-          </v-card-text>
-        </v-card>
-      </template>
+  <TestHeader :color="'secondary'" :title="'Tablero principal'" :buttons="buttons" :itemsTab="itemsTab"
+    v-model:tab="tab" />
+  <TestTabs :items="itemsTab">
+    <template #Consulta>
+      <v-card>
+        <v-card-text>
+          <div class="table-container">
+            <TestTable :headers="headers" :rows="items" :showSearch="true" :showActions="true" actionName="View Details"
+              actionButtonName="Details" @action="showInformation">
+              <template #body="{ rows }">
+                <ItemRows v-for="item in rows" :key="item.name" :item="item" />
+              </template>
+            </TestTable>
+          </div>
+          <v-pagination :length="4"></v-pagination>
+        </v-card-text>
+      </v-card>
+    </template>
 
-      <template #Edición>
-        <v-card>
-          <v-card-text>
-            <div class="table-container">
-              <TestTable
-                :headers="headers"
-                :rows="items"
-                :showSearch="true"
-                :showActions="true"
-                actionName="Edit Details"
-                actionButtonName="Edit"
-              >
-                <template #body="{ rows }">
-                  <ItemRows
-                    v-for="item in rows"
-                    :key="item.name"
-                    :item="item"
-                  />
-                </template>
-              </TestTable>
-            </div>
-            <v-pagination :length="4"></v-pagination>
-          </v-card-text>
-        </v-card>
-      </template>
-      <template #Agregar>
-        <TestForm
-          :fields="fields"
-          buttonText="Guardar cambios"
-          @form-submit="addNewRecord"
-        />
-      </template>
-    </TestTabs>
+    <template #Edición>
+      <v-card>
+        <v-card-text>
+          <div class="table-container">
+            <TestTable :headers="headers" :rows="items" :showSearch="true" :showActions="true" actionName="Edit Details"
+              actionButtonName="Edit" @action="showModal">
+              <template #body="{ rows }">
+                <ItemRows v-for="item in rows" :key="item.name" :item="item" />
+              </template>
+            </TestTable>
+          </div>
+          <v-pagination :length="4"></v-pagination>
+        </v-card-text>
+      </v-card>
+      <v-dialog v-model="dialog">
+        <TestForm :fields="fields" :item="selectedItem" buttonText="Guardar cambios" @form-edit="updateRecord"
+          @form-submit="addNewRecord" />
+      </v-dialog>
+    </template>
+    <template #Agregar>
+      <TestForm :fields="fields" buttonText="Guardar cambios" @form-submit="addNewRecord" />
+    </template>
+  </TestTabs>
 </template>
 
 <script setup>
@@ -79,6 +53,8 @@ import ItemRows from './molecules/ItemRows.vue';
 
 const tab = ref('Consulta');
 const itemsTab = ref(['Consulta', 'Edición', 'Agregar']);
+const dialog = ref(false);
+const selectedItem = ref(null);
 
 const buttons = [
   { icon: 'mdi-magnify' },
@@ -147,15 +123,34 @@ function addNewRecord(formData) {
   clearForm();
 };
 
+function updateRecord(formData) {
+  if (selectedItem.value) {
+    const index = items.value.findIndex(item => item.name === selectedItem.value.name);
+
+    // Update the item at the found index
+    if (index !== -1) {
+      items.value[index] = {
+        name: formData.name,
+        cores: formData.cores,
+        threads: formData.threads,
+        baseClock: formData.baseClock,
+        boostClock: formData.boostClock,
+        tdp: formData.tdp,
+      };
+    }
+
+    clearForm();
+    dialog.value = false;
+  }
+};
+
 function clearForm() {
-  newItem.value = {
-    name: '',
-    cores: null,
-    threads: null,
-    baseClock: '',
-    boostClock: '',
-    tdp: '',
-  };
+  selectedItem.value = null;
+};
+
+function showModal(item) {
+  selectedItem.value = item;
+  dialog.value = true;
 };
 </script>
 
