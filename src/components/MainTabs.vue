@@ -5,31 +5,23 @@
 
     <TestTabs :items="itemsTab">
       <template #Consulta>
-        <v-card flat>
-          <v-table hover>
-            <template v-slot:top>
-              <v-text-field v-model="search" class="pa-2" label="Search"></v-text-field>
-            </template>
-            <thead>
-              <tr>
-                <th v-for="header in headers" :key="header.value">{{ header.text }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in filteredItems" :key="item.name">
-                <td>{{ item.name }}</td>
-                <td>{{ item.cores }}</td>
-                <td>{{ item.threads }}</td>
-                <td>{{ item.baseClock }}</td>
-                <td>{{ item.boostClock }}</td>
-                <td>{{ item.tdp }}</td>
-                <td>
-                  <TestButton text="Ver Detalles" @click="showInformation(item)" />
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-card>
+        <TestTable
+          :headers="headers"
+        >
+          <template #body>
+            <tr v-for="item in filteredItems" :key="item.name">
+              <td>{{ item.name }}</td>
+              <td>{{ item.cores }}</td>
+              <td>{{ item.threads }}</td>
+              <td>{{ item.baseClock }}</td>
+              <td>{{ item.boostClock }}</td>
+              <td>{{ item.tdp }}</td>
+              <td>
+                <TestButton text="Ver Detalles" @click="showInformation(item)" />
+              </td>
+            </tr>
+          </template>
+        </TestTable>
       </template>
 
       <template #Edición>

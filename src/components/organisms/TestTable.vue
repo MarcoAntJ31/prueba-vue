@@ -1,49 +1,33 @@
 <template>
-  <v-card flat>
     <v-table hover>
-      <template v-slot:top>
-        <v-text-field v-model="search" class="pa-2" label="Search"></v-text-field>
-      </template>
       <thead>
         <tr>
-          <th v-for="header in headers" :key="header.value">{{ header.text }}</th>
+          <template v-for="header in headers" :key="header.value">
+            <th>
+              {{ header.text }}
+            </th>
+          </template>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in filteredItems" :key="item.name">
-          <td v-for="(column, index) in columns" :key="index">{{ item[column.value] }}</td>
-          <td>
-            <slot name="actions" :item="item"></slot>
-          </td>
-        </tr>
+        <slot name="body">
+          <tr v-for="row in rows" :key="row.id">
+            <td v-for="cell in row.cells" :key="cell.id">
+              {{ cell.text }}
+            </td>
+          </tr>
+        </slot>
       </tbody>
     </v-table>
-  </v-card>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-
 const props = defineProps({
   headers: {
-    type: Array,
-    required: true,
+    type: Array
   },
-  items: {
-    type: Array,
-    required: true,
+  rows: {
+    type: Array
   },
-  columns: {
-    type: Array,
-    required: true,
-  },
-});
-
-const search = ref('');
-
-const filteredItems = computed(() => {
-  return props.items.filter(item =>
-    item.name.toLowerCase().includes(search.value.toLowerCase())
-  );
 });
 </script>
