@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar :color="color">
+  <v-toolbar image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
     <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
     <v-toolbar-title>{{ title }}</v-toolbar-title>

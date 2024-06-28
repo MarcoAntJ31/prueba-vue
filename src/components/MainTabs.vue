@@ -1,77 +1,84 @@
 <template>
-  <v-card>
-    <TestHeader :color="'primary'" :title="'Tablero principal'" :buttons="buttons" :itemsTab="itemsTab"
-      v-model:tab="tab" />
-
+    <TestHeader
+      :color="'secondary'"
+      :title="'Tablero principal'"
+      :buttons="buttons"
+      :itemsTab="itemsTab"
+      v-model:tab="tab"
+    />
     <TestTabs :items="itemsTab">
       <template #Consulta>
-        <TestTable
-          :headers="headers"
-        >
-          <template #body>
-            <tr v-for="item in filteredItems" :key="item.name">
-              <td>{{ item.name }}</td>
-              <td>{{ item.cores }}</td>
-              <td>{{ item.threads }}</td>
-              <td>{{ item.baseClock }}</td>
-              <td>{{ item.boostClock }}</td>
-              <td>{{ item.tdp }}</td>
-              <td>
-                <TestButton text="Ver Detalles" @click="showInformation(item)" />
-              </td>
-            </tr>
-          </template>
-        </TestTable>
+        <v-card>
+          <v-card-text>
+            <div class="table-container">
+              <TestTable
+                :headers="headers"
+                :rows="items"
+                :showSearch="true"
+                :showActions="true"
+                actionName="View Details"
+                actionButtonName="Details"
+                @action="showInformation"
+              >
+                <template #body="{ rows }">
+                  <ItemRows
+                    v-for="item in rows"
+                    :key="item.name"
+                    :item="item"
+                  />
+                </template>
+              </TestTable>
+            </div>
+            <v-pagination :length="4"></v-pagination>
+          </v-card-text>
+        </v-card>
       </template>
 
       <template #Edición>
-        <v-card flat>
-          <v-table hover>
-            <template v-slot:top>
-              <v-text-field v-model="search" class="pa-2" label="Search"></v-text-field>
-            </template>
-            <thead>
-              <tr>
-                <th v-for="header in headers2" :key="header.value">{{ header.text }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in filteredItems" :key="item.name">
-                <td>{{ item.name }}</td>
-                <td>{{ item.cores }}</td>
-                <td>{{ item.threads }}</td>
-                <td>{{ item.baseClock }}</td>
-                <td>{{ item.boostClock }}</td>
-                <td>{{ item.tdp }}</td>
-                <td>
-                  <TestButton text="Editar datos" />
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+        <v-card>
+          <v-card-text>
+            <div class="table-container">
+              <TestTable
+                :headers="headers"
+                :rows="items"
+                :showSearch="true"
+                :showActions="true"
+                actionName="Edit Details"
+                actionButtonName="Edit"
+              >
+                <template #body="{ rows }">
+                  <ItemRows
+                    v-for="item in rows"
+                    :key="item.name"
+                    :item="item"
+                  />
+                </template>
+              </TestTable>
+            </div>
+            <v-pagination :length="4"></v-pagination>
+          </v-card-text>
         </v-card>
       </template>
-
       <template #Agregar>
-        <v-card flat>
-          <TestModal :fields="fields" buttonText="Guardar cambios" @form-submit="addNewRecord" />
-        </v-card>
+        <TestForm
+          :fields="fields"
+          buttonText="Guardar cambios"
+          @form-submit="addNewRecord"
+        />
       </template>
     </TestTabs>
-  </v-card>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import TestHeader from './organisms/TestHeader.vue';
-import TestButton from './atoms/TestButton.vue';
-import TestModal from './organisms/TestModal.vue';
+import TestForm from './organisms/TestForm.vue';
 import TestTabs from './organisms/TestTabs.vue';
 import TestTable from './organisms/TestTable.vue';
+import ItemRows from './molecules/ItemRows.vue';
 
 const tab = ref('Consulta');
 const itemsTab = ref(['Consulta', 'Edición', 'Agregar']);
-const search = ref('');
 
 const buttons = [
   { icon: 'mdi-magnify' },
@@ -94,19 +101,7 @@ const headers = [
   { text: 'Base Clock', align: 'end', value: 'baseClock' },
   { text: 'Boost Clock', align: 'end', value: 'boostClock' },
   { text: 'TDP (W)', align: 'end', value: 'tdp' },
-  { text: 'Actions', align: 'end', value: 'actions' },
 ];
-
-const headers2 = [
-  { text: 'CPU Model', align: 'start', value: 'name' },
-  { text: 'Cores', align: 'end', value: 'cores' },
-  { text: 'Threads', align: 'end', value: 'threads' },
-  { text: 'Base Clock', align: 'end', value: 'baseClock' },
-  { text: 'Boost Clock', align: 'end', value: 'boostClock' },
-  { text: 'TDP (W)', align: 'end', value: 'tdp' },
-  { text: 'Edit', align: 'end', value: 'edit' },
-];
-
 
 const items = ref([
   { name: 'Intel Core i9-11900K', cores: 8, threads: 16, baseClock: '3.5 GHz', boostClock: '5.3 GHz', tdp: '125W' },
@@ -117,14 +112,17 @@ const items = ref([
   { name: 'AMD Ryzen 7 5800X', cores: 8, threads: 16, baseClock: '3.8 GHz', boostClock: '4.7 GHz', tdp: '105W' },
   { name: 'Intel Core i3-10100', cores: 4, threads: 8, baseClock: '3.6 GHz', boostClock: '4.3 GHz', tdp: '65W' },
   { name: 'AMD Ryzen 3 3300X', cores: 4, threads: 8, baseClock: '3.8 GHz', boostClock: '4.3 GHz', tdp: '65W' },
-  { name: 'Intel Pentium Gold G6400', cores: 2, threads: 4, baseClock: '4.0 GHz', tdp: '58W' },
-  { name: 'AMD Athlon 3000G', cores: 2, threads: 4, baseClock: '3.5 GHz', tdp: '35W' },
+  { name: 'Intel Pentium Gold G6400', cores: 2, threads: 4, baseClock: '4.0 GHz', boostClock: '4.3 GHz', tdp: '58W' },
+  { name: 'AMD Athlon 3000G', cores: 2, threads: 4, baseClock: '3.5 GHz', boostClock: '4.3 GHz', tdp: '35W' },
 ]);
 
-const filteredItems = computed(() => {
-  return items.value.filter(item =>
-    item.name.toLowerCase().includes(search.value.toLowerCase())
-  );
+const newItem = ref({
+  name: '',
+  cores: null,
+  threads: null,
+  baseClock: '',
+  boostClock: '',
+  tdp: '',
 });
 
 function showInformation(item) {
@@ -136,17 +134,7 @@ function showInformation(item) {
          TDP: ${item.tdp}`);
 }
 
-const newItem = ref({
-  name: '',
-  cores: null,
-  threads: null,
-  baseClock: '',
-  boostClock: '',
-  tdp: '',
-});
-
-const addNewRecord = (formData) => {
-  console.log('Adding new record:', formData);
+function addNewRecord(formData) {
   items.value.push({
     name: formData.name,
     cores: formData.cores,
@@ -159,7 +147,7 @@ const addNewRecord = (formData) => {
   clearForm();
 };
 
-const clearForm = () => {
+function clearForm() {
   newItem.value = {
     name: '',
     cores: null,
@@ -170,3 +158,14 @@ const clearForm = () => {
   };
 };
 </script>
+
+<style scoped>
+.table-container {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.v-card {
+  margin: 12px;
+}
+</style>

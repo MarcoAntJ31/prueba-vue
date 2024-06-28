@@ -1,5 +1,4 @@
 <template>
-  <div>
     <v-tabs v-model="selectedTab" align-tabs="center" color="deep-purple-accent-4">
       <v-tab v-for="(item, index) in items" :key="index" :value="item">
         {{ item }}
@@ -11,7 +10,6 @@
         <slot :name="item"></slot>
       </v-window-item>
     </v-window>
-  </div>
 </template>
 
 <script setup>
