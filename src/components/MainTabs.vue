@@ -2,8 +2,8 @@
   <v-card>
     <TestHeader :color="'primary'" :title="'Tablero principal'" :buttons="buttons" :itemsTab="itemsTab"
       v-model:tab="tab" />
-      <TestTabs :items="itemsTab">
 
+    <TestTabs :items="itemsTab">
       <template #Consulta>
         <v-card flat>
           <v-table hover>
@@ -75,6 +75,7 @@ import TestHeader from './organisms/TestHeader.vue';
 import TestButton from './atoms/TestButton.vue';
 import TestModal from './organisms/TestModal.vue';
 import TestTabs from './organisms/TestTabs.vue';
+import TestTable from './organisms/TestTable.vue';
 
 const tab = ref('Consulta');
 const itemsTab = ref(['Consulta', 'Edición', 'Agregar']);
