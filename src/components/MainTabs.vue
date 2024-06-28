@@ -7,9 +7,19 @@
       :itemsTab="itemsTab"
       v-model:tab="tab"
     />
+    <v-tabs
+      v-model="tab"
+      align-tabs="center"
+      color="deep-purple-accent-4"
+    >
+      <v-tab v-for="(item, index) in itemsTab" :key="index" :value="item">
+        {{ item }}
+      </v-tab>
+    </v-tabs>
+
     <v-window v-model="tab">
-      <v-window-item v-for="item in itemsTab" :key="item" :value="item">
-        <v-card flat>
+      <v-window-item v-for="(item, index) in itemsTab" :key="index" :value="item">
+        <v-card flat v-if="item === 'Consulta'">
           <v-table>
             <template v-slot:top>
               <v-text-field v-model="search" class="pa-2" label="Search"></v-text-field>
@@ -17,7 +27,6 @@
             <thead>
               <tr>
                 <th v-for="header in headers" :key="header.value">{{ header.text }}</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -38,6 +47,38 @@
             </tbody>
           </v-table>
         </v-card>
+
+        <v-card flat v-else-if="item === 'Edición'">
+          <v-table>
+            <template v-slot:top>
+              <v-text-field v-model="search" class="pa-2" label="Search"></v-text-field>
+            </template>
+            <thead>
+              <tr>
+                <th v-for="header in headers2" :key="header.value">{{ header.text }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in filteredItems" :key="item.name">
+                <td>{{ item.name }}</td>
+                <td>{{ item.cores }}</td>
+                <td>{{ item.threads }}</td>
+                <td>{{ item.baseClock }}</td>
+                <td>{{ item.boostClock }}</td>
+                <td>{{ item.tdp }}</td>
+                <td>
+                  <TestButton
+                    text="Editar datos"
+                    @click="editItem(item)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+        </v-card>
+
+        <v-card flat v-else>
+        </v-card>
       </v-window-item>
     </v-window>
   </v-card>
@@ -48,7 +89,7 @@ import { ref, computed } from 'vue';
 import TestHeader from './organisms/TestHeader.vue';
 import TestButton from './atoms/TestButton.vue';
 
-const tab = ref(null);
+const tab = ref('Consulta');
 const itemsTab = ref(['Consulta', 'Edición', 'Agregar registro']);
 const search = ref('');
 
@@ -64,7 +105,19 @@ const headers = [
   { text: 'Base Clock', align: 'end', value: 'baseClock' },
   { text: 'Boost Clock', align: 'end', value: 'boostClock' },
   { text: 'TDP (W)', align: 'end', value: 'tdp' },
+  { text: 'Actions', align: 'end', value: 'actions' },
 ];
+
+const headers2 = [
+  { text: 'CPU Model', align: 'start', value: 'name' },
+  { text: 'Cores', align: 'end', value: 'cores' },
+  { text: 'Threads', align: 'end', value: 'threads' },
+  { text: 'Base Clock', align: 'end', value: 'baseClock' },
+  { text: 'Boost Clock', align: 'end', value: 'boostClock' },
+  { text: 'TDP (W)', align: 'end', value: 'tdp' },
+  { text: 'Edit', align: 'end', value: 'edit' },
+];
+
 
 const items = [
   { name: 'Intel Core i9-11900K', cores: 8, threads: 16, baseClock: '3.5 GHz', boostClock: '5.3 GHz', tdp: '125W' },
@@ -93,6 +146,25 @@ function showInformation(item) {
          Boost Clock: ${item.boostClock}\n
          TDP: ${item.tdp}`);
 }
+
+function editItem(item) {
+  // Implementa lógica para abrir un formulario de edición
+  // Aquí puedes usar un modal o un componente de formulario
+
+  // Ejemplo básico de un modal de edición
+  showModalEdit(item);
+}
+
+function saveItemChanges(item) {
+  // Implementa lógica para guardar los cambios realizados en el formulario de edición
+  alert(`Guardando cambios para ${item.name}`);
+}
+
+function showModalEdit(item) {
+  // Ejemplo básico de un modal usando Vuetify's v-dialog
+  // Ajusta según tu estructura y preferencias
+  // Puedes usar un formulario dentro del modal para editar los campos
+  // y luego llamar a saveItemChanges(item) cuando se guarda.
+  alert(`Abriendo modal de edición para ${item.name}`);
+}
 </script>
-
-

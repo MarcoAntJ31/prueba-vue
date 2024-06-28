@@ -12,14 +12,6 @@
       :icon="btn.icon"
       @click="btn.action"
     />
-
-    <template v-slot:extension>
-      <v-tabs v-model="tab" align-tabs="title">
-        <v-tab v-for="item in itemsTab" :key="item" :value="item">
-          {{ item }}
-        </v-tab>
-      </v-tabs>
-    </template>
   </v-toolbar>
 </template>
 
@@ -40,15 +32,5 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  itemsTab: {
-    type: Array,
-    required: true,
-  },
-  tab: {
-    type: String,
-    required: true,
-  }
 });
-
-const tab = ref(props.tab);
 </script>
