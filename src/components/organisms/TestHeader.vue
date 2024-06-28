@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue';
+import { defineProps } from 'vue';
 import TestButton from '../atoms/TestButton.vue';
 
 const props = defineProps({

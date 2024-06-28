@@ -113,7 +113,7 @@ const headers2 = [
 ];
 
 
-const items = [
+const items = ref([
   { name: 'Intel Core i9-11900K', cores: 8, threads: 16, baseClock: '3.5 GHz', boostClock: '5.3 GHz', tdp: '125W' },
   { name: 'AMD Ryzen 9 5950X', cores: 16, threads: 32, baseClock: '3.4 GHz', boostClock: '4.9 GHz', tdp: '105W' },
   { name: 'Intel Core i7-10700K', cores: 8, threads: 16, baseClock: '3.8 GHz', boostClock: '5.1 GHz', tdp: '125W' },
@@ -124,10 +124,10 @@ const items = [
   { name: 'AMD Ryzen 3 3300X', cores: 4, threads: 8, baseClock: '3.8 GHz', boostClock: '4.3 GHz', tdp: '65W' },
   { name: 'Intel Pentium Gold G6400', cores: 2, threads: 4, baseClock: '4.0 GHz', tdp: '58W' },
   { name: 'AMD Athlon 3000G', cores: 2, threads: 4, baseClock: '3.5 GHz', tdp: '35W' },
-];
+]);
 
 const filteredItems = computed(() => {
-  return items.filter(item =>
+  return items.value.filter(item =>
     item.name.toLowerCase().includes(search.value.toLowerCase())
   );
 });
@@ -162,26 +162,21 @@ const newItem = ref({
   tdp: '',
 });
 
-function addNewRecord() {
-
-  items.push({
-    name: newItem.value.name,
-    cores: newItem.value.cores,
-    threads: newItem.value.threads,
-    baseClock: newItem.value.baseClock,
-    boostClock: newItem.value.boostClock,
-    tdp: newItem.value.tdp,
+const addNewRecord = (formData) => {
+  console.log('Adding new record:', formData);
+  items.value.push({
+    name: formData.name,
+    cores: formData.cores,
+    threads: formData.threads,
+    baseClock: formData.baseClock,
+    boostClock: formData.boostClock,
+    tdp: formData.tdp,
   });
 
-  // Limpiar el formulario después de agregar
   clearForm();
+};
 
-  // Opcional: cerrar el formulario o navegar a otra pestaña
-  // tab.value = 'Consulta'; // por ejemplo
-}
-
-function clearForm() {
-  // Limpia los campos del formulario
+const clearForm = () => {
   newItem.value = {
     name: '',
     cores: null,
@@ -190,5 +185,5 @@ function clearForm() {
     boostClock: '',
     tdp: '',
   };
-}
+};
 </script>
