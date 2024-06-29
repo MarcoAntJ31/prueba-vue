@@ -50,6 +50,8 @@ import TestForm from './organisms/TestForm.vue';
 import TestTabs from './organisms/TestTabs.vue';
 import TestTable from './organisms/TestTable.vue';
 import ItemRows from './molecules/ItemRows.vue';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const tab = ref('Consulta');
 const itemsTab = ref(['Consulta', 'Edición', 'Agregar']);
@@ -92,15 +94,6 @@ const items = ref([
   { name: 'AMD Athlon 3000G', cores: 2, threads: 4, baseClock: '3.5 GHz', boostClock: '4.3 GHz', tdp: '35W' },
 ]);
 
-const newItem = ref({
-  name: '',
-  cores: null,
-  threads: null,
-  baseClock: '',
-  boostClock: '',
-  tdp: '',
-});
-
 function showInformation(item) {
   alert(`Detalles de ${item.name}: \n
          Cores: ${item.cores}\n
@@ -110,39 +103,73 @@ function showInformation(item) {
          TDP: ${item.tdp}`);
 }
 
+
 function addNewRecord(formData) {
-  items.value.push({
-    name: formData.name,
-    cores: formData.cores,
-    threads: formData.threads,
-    baseClock: formData.baseClock,
-    boostClock: formData.boostClock,
-    tdp: formData.tdp,
-  });
-
-  clearForm();
-};
-
-function updateRecord(formData) {
-  if (selectedItem.value) {
-    const index = items.value.findIndex(item => item.name === selectedItem.value.name);
-
-    // Update the item at the found index
-    if (index !== -1) {
-      items.value[index] = {
-        name: formData.name,
-        cores: formData.cores,
-        threads: formData.threads,
-        baseClock: formData.baseClock,
-        boostClock: formData.boostClock,
-        tdp: formData.tdp,
-      };
+  try {
+    // Verificar si todos los campos están completos
+    if (!formData.name || !formData.cores || !formData.threads || !formData.baseClock || !formData.boostClock || !formData.tdp) {
+      throw new Error('Todos los campos son obligatorios');
     }
 
+    // Agregar el nuevo ítem
+    items.value.push({
+      name: formData.name,
+      cores: formData.cores,
+      threads: formData.threads,
+      baseClock: formData.baseClock,
+      boostClock: formData.boostClock,
+      tdp: formData.tdp,
+    });
     clearForm();
-    dialog.value = false;
+    toast.success('Item added successfully!', {
+      autoClose: 1000,
+      position: 'top-right',
+    });
+  } catch (error) {
+    toast.error(`Error adding item: ${error.message}`, {
+      autoClose: 1000,
+      position: 'top-right',
+    });
   }
-};
+}
+
+function updateRecord(formData) {
+  try {
+    // Verificar si todos los campos están completos
+    if (!formData.name || !formData.cores || !formData.threads || !formData.baseClock || !formData.boostClock || !formData.tdp) {
+      throw new Error('Todos los campos son obligatorios');
+    }
+
+    if (selectedItem.value) {
+      const index = items.value.findIndex(item => item.name === selectedItem.value.name);
+
+      // Actualizar el ítem en el índice encontrado
+      if (index !== -1) {
+        items.value[index] = {
+          name: formData.name,
+          cores: formData.cores,
+          threads: formData.threads,
+          baseClock: formData.baseClock,
+          boostClock: formData.boostClock,
+          tdp: formData.tdp,
+        };
+        clearForm();
+        toast.success('Item updated successfully!', {
+          autoClose: 1000,
+          position: 'top-right',
+        });
+        dialog.value = false;
+      } else {
+        throw new Error('Item not found');
+      }
+    }
+  } catch (error) {
+    toast.error(`Error updating item: ${error.message}`, {
+      autoClose: 1000,
+      position: 'top-right',
+    });
+  }
+}
 
 function clearForm() {
   selectedItem.value = null;
@@ -152,6 +179,13 @@ function showModal(item) {
   selectedItem.value = item;
   dialog.value = true;
 };
+
+const notify = () => {
+      toast.success("Wow so easy !", {
+        autoClose: 1000,
+        position: "top-right",
+      });
+    }
 </script>
 
 <style scoped>
